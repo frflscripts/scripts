@@ -1,3 +1,6 @@
+# This script needs to be placed here for the runbook to access it: https://github.com/frflscripts/scripts/tree/main
+# This is workaround until Azure Automation supports bicep modules that can be uploaded with the runbook or accessed via a private storage account.
+
 param (
     [Parameter(Mandatory = $true)]
     [string]$assistEnvironment,
