@@ -36,7 +36,7 @@ $serviceObjective = switch ($targetDTUs) {
     800 { "S7" }
     1600 { "S9" }
     3000 { "S12" }
-    default { throw "Unsupported DTU value: $targetDTUs. Supported values are 10 and 200." }
+    default { throw "Unsupported DTU value: $targetDTUs." }
 }
 
 Write-Output "Scaling database '$databaseName' in server '$serverName' to service objective '$serviceObjective'..."
