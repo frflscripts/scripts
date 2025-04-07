@@ -26,8 +26,16 @@ $databaseName = "sqldb-frfl-assist-$assistEnvironment"
 
 # Map DTUs to Service Objective
 $serviceObjective = switch ($targetDTUs) {
-    200 { "S4" }
+    5 { "Basic" }
     10 { "S0" }
+    20 { "S1" }
+    50 { "S2" }
+    100 { "S3" }
+    200 { "S4" }
+    400 { "S6" }
+    800 { "S7" }
+    1600 { "S9" }
+    3000 { "S12" }
     default { throw "Unsupported DTU value: $targetDTUs. Supported values are 10 and 200." }
 }
 
