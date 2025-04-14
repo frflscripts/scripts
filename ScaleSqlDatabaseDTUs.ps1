@@ -24,19 +24,20 @@ if ($subscriptionId) {
 $resourceGroup = "rg-frfl-assist-$assistEnvironment"
 $serverName = "sql-frfl-assist-$assistEnvironment"
 $databaseName = "sqldb-frfl-assist-$assistEnvironment"
+$automationAccountName = "aa-frfl-assist-$assistEnvironment"
 
 $variables = Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName
 
 if ($scaleOperation -eq "Up") {
-    $targetDTUs = $variables.$sqldbScaleUpDTUs
+    $targetDTUs = $variables.sqldbScaleUpDTUs
 } elseif ($scaleOperation -eq "Down") {
-    $targetDTUs = $variables.$sqldbScaleDownDTUs
+    $targetDTUs = $variables.sqldbScaleDownDTUs
 } else {
     throw "Unsupported scale operation: $scaleOperation."
 }
 
 # Map DTUs to Service Objective
-$serviceObjective = switch ($variables.$targetDTUs) {
+$serviceObjective = switch ($variables.targetDTUs) {
     5 { "Basic" }
     10 { "S0" }
     20 { "S1" }
@@ -47,7 +48,7 @@ $serviceObjective = switch ($variables.$targetDTUs) {
     800 { "S7" }
     1600 { "S9" }
     3000 { "S12" }
-    default { throw "Unsupported DTU value: $variables.$targetDTUs." }
+    default { throw "Unsupported DTU value: $variables.targetDTUs." }
 }
 
 Write-Output "Scaling database '$databaseName' in server '$serverName' to service objective '$serviceObjective'..."
