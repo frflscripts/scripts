@@ -6,13 +6,11 @@ param (
     [string]$assistEnvironment,
 
     [Parameter(Mandatory = $true)]
-    [int]$targetDTUs,
+    [string]$scaleOperation,
 
     [Parameter(Mandatory = $true)]
     [string]$subscriptionId
 )
-
-
 
 Write-Output "Authenticating with Managed Identity that is built into the Automation Account..."
 az login --identity | Out-Null
@@ -27,8 +25,18 @@ $resourceGroup = "rg-frfl-assist-$assistEnvironment"
 $serverName = "sql-frfl-assist-$assistEnvironment"
 $databaseName = "sqldb-frfl-assist-$assistEnvironment"
 
+$variables = Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName
+
+if ($scaleOperation -eq "Up") {
+    $targetDTUs = $variables.$sqldbScaleUpDTUs
+} elseif ($scaleOperation -eq "Down") {
+    $targetDTUs = $variables.$sqldbScaleDownDTUs
+} else {
+    throw "Unsupported scale operation: $scaleOperation."
+}
+
 # Map DTUs to Service Objective
-$serviceObjective = switch ($targetDTUs) {
+$serviceObjective = switch ($variables.$targetDTUs) {
     5 { "Basic" }
     10 { "S0" }
     20 { "S1" }
@@ -39,7 +47,7 @@ $serviceObjective = switch ($targetDTUs) {
     800 { "S7" }
     1600 { "S9" }
     3000 { "S12" }
-    default { throw "Unsupported DTU value: $targetDTUs." }
+    default { throw "Unsupported DTU value: $variables.$targetDTUs." }
 }
 
 Write-Output "Scaling database '$databaseName' in server '$serverName' to service objective '$serviceObjective'..."
