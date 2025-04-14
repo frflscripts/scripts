@@ -26,7 +26,9 @@ $serverName = "sql-frfl-assist-$assistEnvironment"
 $databaseName = "sqldb-frfl-assist-$assistEnvironment"
 $automationAccountName = "aa-frfl-assist-$assistEnvironment"
 
-$variables = Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName
+$variables = az automation variable list `
+    --resource-group $resourceGroup `
+    --automation-account-name $automationAccountName
 
 if ($scaleOperation -eq "Up") {
     $targetDTUs = $variables.sqldbScaleUpDTUs
@@ -37,7 +39,7 @@ if ($scaleOperation -eq "Up") {
 }
 
 # Map DTUs to Service Objective
-$serviceObjective = switch ($variables.targetDTUs) {
+$serviceObjective = switch ($targetDTUs) {
     5 { "Basic" }
     10 { "S0" }
     20 { "S1" }
