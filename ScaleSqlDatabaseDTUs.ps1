@@ -29,7 +29,7 @@ $databaseName = "sqldb-frfl-assist-$assistEnvironment"
 if ($scaleOperation -eq "Up") {
     $targetDTUs = Get-AutomationVariable -Name "sqldbScaleUpDTUs"
 } elseif ($scaleOperation -eq "Down") {
-    $targetDTUs = Get-AAutomationVariable -Name "sqldbScaleDownDTUs"
+    $targetDTUs = Get-AutomationVariable -Name "sqldbScaleDownDTUs"
 } else {
     throw "Unsupported scale operation: $scaleOperation."
 }
