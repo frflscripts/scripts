@@ -1,5 +1,6 @@
 # This script needs to be placed here for the runbook to access it: https://github.com/frflscripts/scripts/tree/main
 # This is workaround until Azure Automation supports bicep modules that can be uploaded with the runbook or accessed via a private storage account.
+# You will need to delete the runbook in Azure to force it to pickup the changes in this file.
 
 param (
     [Parameter(Mandatory = $true)]
