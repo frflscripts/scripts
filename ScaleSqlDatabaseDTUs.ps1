@@ -34,7 +34,7 @@ if ($scaleOperation -eq "Up") {
     throw "Unsupported scale operation: $scaleOperation."
 }
 
-Write-Output $targetDTUs
+Write-Output "Attempting to scale Azure SQL database to $targetDTUs DTUs..."
 
 # Map DTUs to Service Objective
 $serviceObjective = switch ($targetDTUs) {
