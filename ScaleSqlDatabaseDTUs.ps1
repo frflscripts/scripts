@@ -26,21 +26,16 @@ $serverName = "sql-frfl-assist-$assistEnvironment"
 $databaseName = "sqldb-frfl-assist-$assistEnvironment"
 $automationAccountName = "aa-frfl-assist-$assistEnvironment"
 
-$variables = az automation variable list `
-    --resource-group $resourceGroup `
-    --automation-account-name $automationAccountName
-
 if ($scaleOperation -eq "Up") {
-    $targetDTUs = $variables.sqldbScaleUpDTUs
+    $targetDTUs = (Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName -Name "sqldbScaleUpDTUs").Value 
 } elseif ($scaleOperation -eq "Down") {
-    $targetDTUs = $variables.sqldbScaleDownDTUs
+    $targetDTUs = (Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName -Name "sqldbScaleDownDTUs").Value 
 } else {
     throw "Unsupported scale operation: $scaleOperation."
 }
 
 # Map DTUs to Service Objective
 $serviceObjective = switch ($targetDTUs) {
-    5 { "Basic" }
     10 { "S0" }
     20 { "S1" }
     50 { "S2" }
