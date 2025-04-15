@@ -2,8 +2,6 @@
 # This is workaround until Azure Automation supports bicep modules that can be uploaded with the runbook or accessed via a private storage account.
 # You will need to delete the runbook in Azure to force it to pickup the changes in this file.
 
-Import-Module Az.Automation
-
 param (
     [Parameter(Mandatory = $true)]
     [string]$assistEnvironment,
@@ -27,15 +25,16 @@ if ($subscriptionId) {
 $resourceGroup = "rg-frfl-assist-$assistEnvironment"
 $serverName = "sql-frfl-assist-$assistEnvironment"
 $databaseName = "sqldb-frfl-assist-$assistEnvironment"
-$automationAccountName = "aa-frfl-assist-$assistEnvironment"
 
 if ($scaleOperation -eq "Up") {
-    $targetDTUs = (Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName -Name "sqldbScaleUpDTUs").Value 
+    $targetDTUs = Get-AutomationVariable -Name "sqldbScaleUpDTUs"
 } elseif ($scaleOperation -eq "Down") {
-    $targetDTUs = (Get-AzAutomationVariable -ResourceGroupName $resourceGroup -AutomationAccountName $automationAccountName -Name "sqldbScaleDownDTUs").Value 
+    $targetDTUs = Get-AAutomationVariable -Name "sqldbScaleDownDTUs"
 } else {
     throw "Unsupported scale operation: $scaleOperation."
 }
+
+Write-Output $targetDTUs
 
 # Map DTUs to Service Objective
 $serviceObjective = switch ($targetDTUs) {
